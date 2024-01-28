@@ -7,7 +7,7 @@ public class GuessBirthday {
     String answer = ""; // Stores the final guessed answer in binary form
     int num = 0; // Stores the final guessed answer in decimal form
     int choice = 0; // User's choice: 1 for guessing birthday, 2 for guessing a number
-    int[] number; // Array to store the numbers for guessing
+    int number = 0; // Array to store the numbers for guessing
     int[][] Birthday; // 2D array to store sets of numbers for guessing
 
     // Finds the first empty index in a set to insert a new number
@@ -23,14 +23,15 @@ public class GuessBirthday {
     }
 
     // Builds the M sets of numbers based on binary representation
-    public void Builder(int[] day, int[][] Birthday) {
-        for (int i = 0; i < day.length; i++) {
-            int temp = day[i];
+    public void Builder(int number, int[][] Birthday) {
+        for (int i = 1; i <= number; i++) {
+        	int num = i;
+            int temp = num;
             for (int j = Birthday.length - 1; j >= 0; j--) {
                 if (temp >= (int) Math.pow(2, j)) {
                     temp -= (int) Math.pow(2, j);
                     int k = Index(Birthday[j]);
-                    Birthday[j][k] = day[i];
+                    Birthday[j][k] = num;
                 }
             }
         }
@@ -147,13 +148,15 @@ public class GuessBirthday {
     // Constructor to initialize the game based on user's choice
     public GuessBirthday(int choice) {
         this.choice = choice;
-        number = (choice == 1) ? new int[31] : new int[255];
-        double result = Math.log(number.length + 1) / Math.log(2);
-        int roundedResult = (int) Math.round(result);
-        Birthday = new int[roundedResult][(number.length + 1) / 2];
-        for (int i = 0; i < number.length; i++) {
-            number[i] = i + 1;
-        }
+        if(choice == 1)
+        	number = 31;
+        else
+        	number = 255;
+      
+        int roundedResult = (int) Math.round(Math.log(number + 1) / Math.log(2));
+        
+        Birthday = new int[roundedResult][(number + 1) / 2];
+        //System.out.println("Your number is in the set: " + Birthday[0].length);
         Builder(number, Birthday);
         answer = Guess(Birthday);
         num = BinaryToDecimal(answer);
